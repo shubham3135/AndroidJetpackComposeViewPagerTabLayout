@@ -1,7 +1,6 @@
 package com.shubhamkumarwinner.composeviewpagertablayout
 
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -15,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.shubhamkumarwinner.composeviewpagertablayout.ui.theme.ComposeViewPagerTabLayoutTheme
 
@@ -27,7 +26,7 @@ class MainActivity : ComponentActivity() {
             ComposeViewPagerTabLayoutTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    HorizontalViewPager()
+                    VerticalViewPager()
                 }
             }
         }
@@ -36,24 +35,24 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalPagerApi
 @Composable
-fun HorizontalViewPager() {
-    val pagerState = rememberPagerState(pageCount = 12, initialOffscreenLimit = 2)
+fun VerticalViewPager() {
+    val listOfImage = listOf(
+        R.drawable.pic0,
+        R.drawable.pic1,
+        R.drawable.pic2,
+        R.drawable.pic3,
+        R.drawable.pic4,
+        R.drawable.pic5,
+        R.drawable.pic6,
+        R.drawable.pic7,
+        R.drawable.pic8,
+        R.drawable.pic9,
+        R.drawable.pic10,
+        R.drawable.pic11
+    )
+    val pagerState = rememberPagerState(pageCount = listOfImage.size, initialOffscreenLimit = 2)
 
-    HorizontalPager(state = pagerState) { page ->
-        val listOfImage = listOf(
-            R.drawable.pic0,
-            R.drawable.pic1,
-            R.drawable.pic2,
-            R.drawable.pic3,
-            R.drawable.pic4,
-            R.drawable.pic5,
-            R.drawable.pic6,
-            R.drawable.pic7,
-            R.drawable.pic8,
-            R.drawable.pic9,
-            R.drawable.pic10,
-            R.drawable.pic11
-        )
+    VerticalPager(state = pagerState) { page ->
         // Our page content
         Box(
             modifier = Modifier.fillMaxSize(),
