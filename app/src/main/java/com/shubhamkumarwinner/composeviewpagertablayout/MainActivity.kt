@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -12,10 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.*
 import com.google.android.material.animation.*
 import com.google.android.material.math.MathUtils.lerp
@@ -56,37 +58,48 @@ fun HorizontalViewPager() {
     )
     val pagerState = rememberPagerState(pageCount = listOfImage.size, initialOffscreenLimit = 2)
 
-    HorizontalPager(state = pagerState) { page ->
-        // Our page content
-        Card(
-            Modifier
-                .graphicsLayer {
-                    val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column {
+            HorizontalPager(state = pagerState) { page ->
+                Card(
+                    Modifier
+                        .graphicsLayer {
+                            val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                            lerp(
+                                0.65f,
+                                1f,
+                                1f - pageOffset.coerceIn(0f, 1f)
+                            ).also { scale ->
+                                scaleX = scale
+                                scaleY = scale
+                            }
 
-                    lerp(
-                        0.65f,
-                        1f,
-                        1f - pageOffset.coerceIn(0f, 1f)
-                    ).also { scale ->
-                        scaleX = scale
-                        scaleY = scale
-                    }
-
-                    alpha = lerp(
-                       0.5f,
-                        1f,
-                        1f - pageOffset.coerceIn(0f, 1f)
+                            alpha = lerp(
+                                0.5f,
+                                1f,
+                                1f - pageOffset.coerceIn(0f, 1f)
+                            )
+                        }
+                ) {
+                    Image(
+                        painter = painterResource(id = listOfImage[page]),
+                        contentDescription = "image$page",
+                        contentScale = ContentScale.FillWidth,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
-        ) {
-            Image(
-                painter = painterResource(id = listOfImage[page]),
-                contentDescription = "image$page",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxSize()
+            }
+            HorizontalPagerIndicator(
+                pagerState = pagerState,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp),
             )
         }
-
     }
+
 }
 
