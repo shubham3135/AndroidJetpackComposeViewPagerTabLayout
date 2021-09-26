@@ -4,19 +4,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.VerticalPager
-import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.pager.*
+import com.google.android.material.animation.*
+import com.google.android.material.math.MathUtils.lerp
 import com.shubhamkumarwinner.composeviewpagertablayout.ui.theme.ComposeViewPagerTabLayoutTheme
+import kotlin.math.absoluteValue
 
 @ExperimentalPagerApi
 class MainActivity : ComponentActivity() {
@@ -26,7 +30,7 @@ class MainActivity : ComponentActivity() {
             ComposeViewPagerTabLayoutTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    VerticalViewPager()
+                    HorizontalViewPager()
                 }
             }
         }
@@ -35,7 +39,7 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalPagerApi
 @Composable
-fun VerticalViewPager() {
+fun HorizontalViewPager() {
     val listOfImage = listOf(
         R.drawable.pic0,
         R.drawable.pic1,
@@ -52,11 +56,28 @@ fun VerticalViewPager() {
     )
     val pagerState = rememberPagerState(pageCount = listOfImage.size, initialOffscreenLimit = 2)
 
-    VerticalPager(state = pagerState) { page ->
+    HorizontalPager(state = pagerState) { page ->
         // Our page content
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+        Card(
+            Modifier
+                .graphicsLayer {
+                    val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+
+                    lerp(
+                        0.65f,
+                        1f,
+                        1f - pageOffset.coerceIn(0f, 1f)
+                    ).also { scale ->
+                        scaleX = scale
+                        scaleY = scale
+                    }
+
+                    alpha = lerp(
+                       0.5f,
+                        1f,
+                        1f - pageOffset.coerceIn(0f, 1f)
+                    )
+                }
         ) {
             Image(
                 painter = painterResource(id = listOfImage[page]),
